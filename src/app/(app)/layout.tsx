@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getSupabaseConfig } from '@/lib/supabase/config';
 import { AppNavigation } from '@/components/app-navigation';
 import { LogoutButton } from '@/components/logout-button';
+export const dynamic = 'force-dynamic';
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   if (!getSupabaseConfig()) redirect('/login');
   const supabase = await createClient();
