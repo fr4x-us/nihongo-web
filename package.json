@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:integration": "node --env-file=.env.local tests/integration.mjs",
     "test": "vitest run",
-    "test:kana": "node --env-file=.env.local tests/kana-integration.mjs"
+    "test:kana": "node --env-file=.env.local tests/kana-integration.mjs",
+    "test:review": "node --env-file=.env.local tests/review-integration.mjs"
   },
   "engines": {
     "node": ">=22"
