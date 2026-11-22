@@ -80,3 +80,9 @@ Tidak ada implementasi Tugas 1 yang ditunda. Verifikasi hosted/email nyata dan p
 - `supabase/migrations/0001_init.sql`
 - `tests/integration.mjs`
 - `tsconfig.json`
+
+## Status pengiriman
+
+Empat commit implementasi/verifikasi dibuat pada branch lokal `tugas-1-kerangka`, disusul commit dokumentasi status pengiriman. Pengiriman melalui HTTPS Git ditolak HTTP 403. Pembuatan branch melalui connector GitHub juga ditolak HTTP 403 `Resource not accessible by integration`. Karena branch belum dapat dibuat di remote, Pull Request ke `main` belum dibuka. Tidak ada perubahan pada `main`.
+
+Koneksi/integrasi GitHub memerlukan izin Contents read/write untuk mengirim branch dan Pull requests read/write untuk membuka PR. Ini penolakan akses dari GitHub, bukan kegagalan build atau pengujian aplikasi. Patch, bundle Git, dan ZIP sumber disiapkan dari HEAD lokal tanpa `.env.local`, dependensi terpasang, atau hasil build.
