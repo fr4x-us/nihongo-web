@@ -163,3 +163,6 @@ supabase/.temp/
 supabase/.branches/
 playwright-report/
 test-results/
+
+# Dihasilkan oleh Next.js typegen/build
+next-env.d.ts

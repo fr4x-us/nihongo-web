@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-export function AuthForm({ configured }: { configured: boolean }) {
+export function AuthForm({ configured, confirmationMessage }: { configured: boolean; confirmationMessage?: string }) {
   const router = useRouter();
   const [register, setRegister] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -26,14 +26,14 @@ export function AuthForm({ configured }: { configured: boolean }) {
     finally { setBusy(false); }
   }
   return <>
-    <div className="mb-7 grid grid-cols-2 gap-2 rounded-xl bg-aqua p-1" aria-label="Pilihan akun">{[false, true].map(mode => <button key={String(mode)} type="button" aria-pressed={register === mode} disabled={busy} onClick={() => { setRegister(mode); setMessage(''); }} className={`rounded-lg px-4 py-3 font-semibold ${register === mode ? 'bg-white shadow-sm' : ''}`}>{mode ? 'Daftar' : 'Masuk'}</button>)}</div>
+    <div className="mb-7 grid grid-cols-2 gap-2 rounded-xl bg-aqua p-1" role="group" aria-label="Pilihan akun">{[false, true].map(mode => <button key={String(mode)} type="button" aria-pressed={register === mode} disabled={busy} onClick={() => { setRegister(mode); setMessage(''); }} className={`rounded-lg px-4 py-3 font-semibold ${register === mode ? 'bg-white shadow-sm' : ''}`}>{mode ? 'Daftar' : 'Masuk'}</button>)}</div>
     <h1 className="text-2xl font-bold">{register ? 'Mulai langkah pertamamu' : 'Selamat datang kembali'}</h1><p className="mt-2 mb-6 text-[#45666a]">{register ? 'Buat akun untuk mulai belajar bahasa Jepang.' : 'Masuk dan lanjutkan perjalanan belajarmu.'}</p>
     {!configured && <p role="status" className="mb-5 rounded-xl bg-orange/20 p-4">Layanan akun belum tersedia. Silakan kembali nanti.</p>}
     <form onSubmit={submit} className="space-y-5">
-      {register && <div><label htmlFor="display_name">Nama panggilan</label><input id="display_name" name="display_name" autoComplete="nickname" maxLength={80} required disabled={busy}/></div>}
-      <div><label htmlFor="email">Email</label><input id="email" name="email" type="email" autoComplete="email" required disabled={busy}/></div>
-      <div><label htmlFor="password">Kata sandi</label><input id="password" name="password" type="password" autoComplete={register ? 'new-password' : 'current-password'} minLength={register ? 8 : undefined} maxLength={128} required disabled={busy} aria-describedby={register ? 'password-help' : undefined}/>{register && <p id="password-help" className="mt-2 text-sm text-[#45666a]">Gunakan minimal 8 karakter.</p>}</div>
-      <p role="status" aria-live="polite" className="text-sm leading-relaxed">{message}</p>
+      {register && <div><label className="label" htmlFor="display_name">Nama panggilan</label><input className="input" id="display_name" name="display_name" autoComplete="nickname" maxLength={80} required disabled={busy}/></div>}
+      <div><label className="label" htmlFor="email">Email</label><input className="input" id="email" name="email" type="email" autoComplete="email" required disabled={busy}/></div>
+      <div><label className="label" htmlFor="password">Kata sandi</label><input className="input" id="password" name="password" type="password" autoComplete={register ? 'new-password' : 'current-password'} minLength={register ? 8 : undefined} maxLength={128} required disabled={busy} aria-describedby={register ? 'password-help' : undefined}/>{register && <p id="password-help" className="mt-2 text-sm text-[#45666a]">Gunakan minimal 8 karakter.</p>}</div>
+      <p role="status" aria-live="polite" className="text-sm leading-relaxed">{message || confirmationMessage}</p>
       <button className="button w-full" disabled={busy || !configured}>{busy ? 'Sebentar, ya…' : register ? 'Buat Akun' : 'Masuk'}</button>
     </form>
   </>;
