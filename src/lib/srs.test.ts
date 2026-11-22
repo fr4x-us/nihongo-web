@@ -25,6 +25,9 @@ describe('SM-2 dengan waktu eksplisit', () => {
       ease: 2.3, repetitions: 0, intervalDays: 0, lapses: 1, dueAt: new Date('2026-11-23T00:05:00Z'),
     });
   });
+  it('grade 1 mempertahankan presisi ease sesuai pengurangan 0.2', () => {
+    expect(gradeCard({ ...fresh, ease: 2.555 }, 1, now).ease).toBeCloseTo(2.355, 12);
+  });
   it('ease tidak melewati batas bawah 1.3', () => {
     let state = { ...fresh, ease: 1.4 };
     for (let i = 0; i < 20; i++) {

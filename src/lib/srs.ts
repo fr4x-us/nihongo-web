@@ -12,7 +12,7 @@ const roundedEase = (value: number) => Math.max(1.3, Math.round(value * 100) / 1
 
 export function gradeCard(state: SrsState, grade: Grade, now: Date): GradedState {
   if (grade === 1) {
-    return { ease: roundedEase(state.ease - 0.2), intervalDays: 0,
+    return { ease: Math.max(1.3, state.ease - 0.2), intervalDays: 0,
       repetitions: 0, lapses: state.lapses + 1, dueAt: new Date(now.getTime() + 10 * 60 * 1000) };
   }
   const repetitions = state.repetitions + 1;
