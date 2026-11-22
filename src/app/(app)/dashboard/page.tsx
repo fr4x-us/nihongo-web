@@ -1,3 +1,2 @@
-export default function Page() {
-  return <section className="card min-h-56 p-7"><h1 className="text-3xl font-bold">Dashboard</h1></section>;
-}
+import { Dashboard } from '@/components/dashboard';
+export default function Page() { return <Dashboard/>; }
