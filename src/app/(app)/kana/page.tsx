@@ -1,3 +1,2 @@
-export default function Page() {
-  return <section className="card min-h-56 p-7"><h1 className="text-3xl font-bold">Kana</h1></section>;
-}
+import { KanaCatalog } from '@/components/kana/kana-catalog';
+export default function Page() { return <KanaCatalog/>; }
