@@ -1,6 +1,6 @@
 # Nihongo Wakaranai
 
-Kerangka aplikasi belajar bahasa Jepang untuk penutur bahasa Indonesia. Next.js App Router, TypeScript, Tailwind CSS, dan Supabase. Halaman belajar masih berupa judul placeholder; belum ada konten pelajaran, SRS, pembayaran, atau fitur kuis.
+Kerangka aplikasi belajar bahasa Jepang untuk penutur bahasa Indonesia. Next.js App Router, TypeScript, Tailwind CSS, dan Supabase. Tersedia tabel kana, kartu belajar, kuis, serta sesi review SRS dan dashboard progres. Modul pelajaran lainnya masih berupa placeholder; pembayaran belum tersedia.
 
 ## Menjalankan
 

@@ -1,11 +1,5 @@
-import { createClient } from '../supabase/client';
+import { authenticatedClient } from '../supabase/session';
 import type { Kana } from '../data/kana';
-async function authenticatedClient() {
-  const client = createClient();
-  const { data, error } = await client.auth.getUser();
-  if (error || !data.user) throw new Error('Silakan masuk kembali untuk menyimpan progres.');
-  return { client, userId: data.user.id };
-}
 export async function loadKanaProgress(): Promise<string[]> {
   const { client, userId } = await authenticatedClient();
   // Paginasi agar tidak terpotong oleh batas respons server.
