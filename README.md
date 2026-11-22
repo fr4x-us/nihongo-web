@@ -74,3 +74,19 @@ Runner default memakai `/usr/bin/chromium`. Pasang Chromium atau atur `CHROMIUM_
 - `supabase/migrations/0001_init.sql`: skema, trigger, grants, dan RLS.
 
 Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desktop memakai sidebar. Semua halaman belajar hanya menampilkan judul. Keluar mengakhiri sesi perangkat/browser saat ini.
+
+## Modul kana (Tugas 2)
+
+`/kana` menyediakan tabel Hiragana/Katakana dengan kelompok Dasar, Dakuten (termasuk handakuten), dan Yoon. Ketuk sel untuk melihat karakter dan romaji. Putar suara memakai Web Speech API `ja-JP`; tombol disembunyikan jika API tidak tersedia. Ketersediaan dan kualitas suara Jepang bergantung perangkat.
+
+`/kana/learn` menampilkan kartu satu baris. Balik dengan klik, Enter, atau Spasi; setelah semua kartu dilihat, selesaikan baris untuk menyimpan progres dan membuka kuis baris tersebut. Penyimpanan hanya mengirim tiga kunci kartu, memakai `onConflict: 'user_id,item_type,item_id'` dan `ignoreDuplicates: true`, sehingga default database digunakan untuk kartu baru dan data SRS lama tidak tertimpa.
+
+`/kana/quiz` menerima cakupan baris atau semua karakter yang sudah dipelajari pada jenis kana terpilih. Setiap soal memiliki empat opsi. Pada arah romaji ke kana, **ji dan zu dilewati** karena masing-masing punya dua karakter yang valid. Pada arah kana ke romaji, semuanya tetap ditanyakan tanpa pengecoh yang beromaji sama. ID `hira:di`/`hira:du` dan `kata:di`/`kata:du` membedakan ぢ/づ dan ヂ/ヅ; bacaannya tetap ji/zu. Setiap jawaban disimpan sebagai grade 5 (benar) atau 1 (salah). Navigasi soal berikutnya menunggu penyimpanan berhasil. Ulangi soal yang salah memulai sesi baru dengan hanya soal yang salah pada sesi sebelumnya.
+
+```sh
+npm run test
+# Server produksi/dev dan Supabase lokal harus berjalan:
+npm run test:kana
+```
+
+Vitest memeriksa 208 entri (104 per jenis), kelompok, ID, romaji khusus, ambiguitas, dan empat opsi pengecoh. Tes browser kana membuat akun sementara, memeriksa alur belajar/kuis melalui keyboard, readback cards/review_logs, pengulangan baris tanpa duplikasi atau penimpaan SRS, penanda progres, serta viewport 375px dan 1280px. Akun uji dibersihkan pada akhir tes. `Flashcard` dan `QuizCard` menerima props generik dan tidak bergantung pada data kana.

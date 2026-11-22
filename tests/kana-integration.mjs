@@ -20,7 +20,12 @@ async function learnKa() {
     const flip=page.getByRole('button',{name:/Soal. Balik untuk melihat jawaban/});
     await flip.focus(); await flip.press(i%2 ? 'Space' : 'Enter');
     await page.getByRole('button',{name:/Jawaban. Balik untuk melihat soal/}).waitFor();
-    if(i===0) await page.screenshot({path:'test-results/kana-learn-375.png',fullPage:true});
+    if(i===0) {
+      await page.screenshot({path:'test-results/kana-learn-375.png',fullPage:true});
+      await page.setViewportSize({width:1280,height:900});
+      await page.screenshot({path:'test-results/kana-learn-1280.png',fullPage:true});
+      await page.setViewportSize({width:375,height:900});
+    }
     await page.getByRole('button',{name:i===4?'Selesaikan baris':'Kartu berikutnya',exact:true}).click();
   }
   await page.getByRole('heading',{name:'Baris ka selesai!',exact:true}).waitFor();
@@ -33,7 +38,7 @@ try {
   await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Kata sandi',{exact:true}).fill(password);
   await page.locator('form').getByRole('button',{name:'Masuk',exact:true}).click();await page.waitForURL('**/dashboard');
   await page.goto(base+'/kana/quiz?row=learned');
-  await page.getByText('0 kana sudah dipelajari untuk script ini.',{exact:true}).waitFor();
+  await page.getByText('0 kana sudah dipelajari untuk jenis kana ini.',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Mulai kuis',exact:true}).click();await page.getByText(/Belum ada kana yang bisa ditanyakan/).waitFor();
   await page.goto(base+'/kana');
   for(const width of [375,1280]) {
@@ -43,10 +48,22 @@ try {
     await page.screenshot({path:`test-results/kana-table-${width}.png`,fullPage:true});
   }
   await page.setViewportSize({width:375,height:900});
+  for(const name of ['し, shi','つ, tsu','ふ, fu','を, wo']) await page.getByRole('button',{name,exact:true}).waitFor();
+  await page.getByRole('button',{name:'Dakuten',exact:true}).click();
+  for(const name of ['ぢ, ji','づ, zu']) await page.getByRole('button',{name,exact:true}).waitFor();
+  await page.getByRole('button',{name:'Yoon',exact:true}).click();
+  for(const name of ['しゃ, sha','ちゅ, chu','じょ, jo']) await page.getByRole('button',{name,exact:true}).waitFor();
+  console.log('PASS: sembilan bacaan Hepburn khusus terlihat sesuai di tabel browser.');
+  await page.getByRole('button',{name:'Dasar',exact:true}).click();
   await page.getByRole('tab',{name:'Katakana',exact:true}).click();
   await page.getByRole('button',{name:'シ, shi',exact:true}).click();
   await page.getByRole('dialog',{name:'Kenali kana'}).waitFor();
   await page.screenshot({path:'test-results/kana-panel-375.png',fullPage:true});
+  if(await page.getByRole('button',{name:'Putar suara',exact:true}).count()) {
+    await page.evaluate(()=>{window.speechSynthesis.speak=utterance=>{window.__kanaSpeech={text:utterance.text,lang:utterance.lang};};});
+    await page.getByRole('button',{name:'Putar suara',exact:true}).click();
+    assert.deepEqual(await page.evaluate(()=>window.__kanaSpeech),{text:'シ',lang:'ja-JP'});
+  }
   await page.keyboard.press('Escape');assert.equal(await page.getByRole('dialog').count(),0);
   await page.getByRole('button',{name:'Yoon',exact:true}).click();
   await page.getByRole('button',{name:'シャ, sha',exact:true}).waitFor();
@@ -70,7 +87,11 @@ try {
     const options=page.getByRole('group',{name:'Pilih satu jawaban'}).getByRole('button');assert.equal(await options.count(),4);
     const labels=await options.allTextContents();const chosen=i===0?labels.find(s=>s!==correct):correct;
     const choice=page.getByRole('button',{name:chosen,exact:true});await choice.focus();await choice.press('Enter');
-    if(i===0) {await page.getByText(/Belum tepat/).waitFor();await page.screenshot({path:'test-results/kana-quiz-375.png',fullPage:true});}
+    if(i===0) {
+      await page.getByText(/Belum tepat/).waitFor();await page.screenshot({path:'test-results/kana-quiz-375.png',fullPage:true});
+      await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'test-results/kana-quiz-1280.png',fullPage:true});
+      await page.setViewportSize({width:375,height:900});
+    }
     await page.getByRole('button',{name:i===4?'Lihat hasil':'Soal berikutnya',exact:true}).click();
   }
   await page.getByText('Skor 4 / 5',{exact:true}).waitFor();
@@ -80,9 +101,9 @@ try {
   logs=ok(await admin.from('review_logs').select('grade').eq('user_id',userId));assert.equal(logs.length,6);assert.equal(logs.filter(l=>l.grade===5).length,5);
   console.log('PASS: kuis baris ka, skor 4/5, ulang hanya satu soal salah, 6 log dengan grade 1/5 sesuai jawaban.');
   await page.goto(base+'/kana');await page.getByRole('region',{name:'Baris ka',exact:true}).getByText('✓ Dipelajari',{exact:true}).waitFor();
-  await page.goto(base+'/kana/quiz?row=learned');await page.getByText('5 kana sudah dipelajari untuk script ini.',{exact:true}).waitFor();
+  await page.goto(base+'/kana/quiz?row=learned');await page.getByText('5 kana sudah dipelajari untuk jenis kana ini.',{exact:true}).waitFor();
   await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'test-results/kana-quiz-setup-1280.png',fullPage:true});
-  await page.getByLabel('Jenis kana',{exact:true}).selectOption('katakana');await page.getByText('0 kana sudah dipelajari untuk script ini.',{exact:true}).waitFor();
+  await page.getByLabel('Jenis kana',{exact:true}).selectOption('katakana');await page.getByText('0 kana sudah dipelajari untuk jenis kana ini.',{exact:true}).waitFor();
   await page.getByLabel('Jenis kana',{exact:true}).selectOption('hiragana');await page.getByLabel('Cakupan',{exact:true}).selectOption('da');await page.getByLabel('Arah soal',{exact:true}).selectOption('romaji-kana');
   await page.getByRole('button',{name:'Mulai kuis',exact:true}).click();await page.getByText(/Soal 1 dari 3/).waitFor();
   assert.ok(['da','de','do'].includes((await page.getByLabel('Soal',{exact:true}).innerText()).trim()));
