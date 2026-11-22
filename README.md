@@ -73,7 +73,7 @@ Runner default memakai `/usr/bin/chromium`. Pasang Chromium atau atur `CHROMIUM_
 - `src/lib/srs.ts`: sengaja kosong; `src/lib/data/` dan `src/data/` disiapkan.
 - `supabase/migrations/0001_init.sql`: skema, trigger, grants, dan RLS.
 
-Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desktop memakai sidebar. Semua halaman belajar hanya menampilkan judul. Keluar mengakhiri sesi perangkat/browser saat ini.
+Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desktop memakai sidebar. Modul kana sudah tersedia; halaman belajar lainnya masih berupa placeholder judul. Keluar mengakhiri sesi perangkat/browser saat ini.
 
 ## Modul kana (Tugas 2)
 
@@ -86,7 +86,9 @@ Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desk
 ```sh
 npm run test
 # Server produksi/dev dan Supabase lokal harus berjalan:
-npm run test:kana
+TEST_BASE_URL=http://localhost:3000 npm run test:kana
 ```
 
 Vitest memeriksa 208 entri (104 per jenis), kelompok, ID, romaji khusus, ambiguitas, dan empat opsi pengecoh. Tes browser kana membuat akun sementara, memeriksa alur belajar/kuis melalui keyboard, readback cards/review_logs, pengulangan baris tanpa duplikasi atau penimpaan SRS, penanda progres, serta viewport 375px dan 1280px. Akun uji dibersihkan pada akhir tes. `Flashcard` dan `QuizCard` menerima props generik dan tidak bergantung pada data kana.
+
+Gunakan origin aplikasi yang konsisten saat menguji (contoh `http://localhost:3000`), termasuk `TEST_BASE_URL`, redirect URL Auth, dan origin yang diizinkan proxy lokal jika ada. Untuk regresi autentikasi dengan origin tersebut: `TEST_BASE_URL=http://localhost:3000 npm run test:integration`.
