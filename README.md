@@ -1,6 +1,6 @@
 # Nihongo Wakaranai
 
-Kerangka aplikasi belajar bahasa Jepang untuk penutur bahasa Indonesia. Next.js App Router, TypeScript, Tailwind CSS, dan Supabase. Halaman belajar masih berupa judul placeholder; belum ada konten pelajaran, SRS, pembayaran, atau fitur kuis.
+Kerangka aplikasi belajar bahasa Jepang untuk penutur bahasa Indonesia. Next.js App Router, TypeScript, Tailwind CSS, dan Supabase. Tersedia tabel kana, kartu belajar, kuis, serta sesi review SRS dan dashboard progres. Modul pelajaran lainnya masih berupa placeholder; pembayaran belum tersedia.
 
 ## Menjalankan
 
@@ -70,10 +70,10 @@ Runner default memakai `/usr/bin/chromium`. Pasang Chromium atau atur `CHROMIUM_
 - `src/app/auth/callback`: penyelesaian konfirmasi email PKCE.
 - `src/components`: form akun, navigasi, tombol keluar.
 - `src/lib/supabase`: klien browser/server dan konfigurasi.
-- `src/lib/srs.ts`: sengaja kosong; `src/lib/data/` dan `src/data/` disiapkan.
+- `src/lib/srs.ts`: fungsi SM-2 murni; `src/lib/review/`: registry kartu dan akses progres pengguna.
 - `supabase/migrations/0001_init.sql`: skema, trigger, grants, dan RLS.
 
-Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desktop memakai sidebar. Modul kana sudah tersedia; halaman belajar lainnya masih berupa placeholder judul. Keluar mengakhiri sesi perangkat/browser saat ini.
+Navigasi mobile memakai dua baris supaya tujuh menu tetap terbaca di 375px; desktop memakai sidebar. Modul kana dan review SRS sudah tersedia; Kotoba, Kanji, Bunpou, dan JLPT masih berupa placeholder judul. Keluar mengakhiri sesi perangkat/browser saat ini.
 
 ## Modul kana (Tugas 2)
 
@@ -92,3 +92,18 @@ TEST_BASE_URL=http://localhost:3000 npm run test:kana
 Vitest memeriksa 208 entri (104 per jenis), kelompok, ID, romaji khusus, ambiguitas, dan empat opsi pengecoh. Tes browser kana membuat akun sementara, memeriksa alur belajar/kuis melalui keyboard, readback cards/review_logs, pengulangan baris tanpa duplikasi atau penimpaan SRS, penanda progres, serta viewport 375px dan 1280px. Akun uji dibersihkan pada akhir tes. `Flashcard` dan `QuizCard` menerima props generik dan tidak bergantung pada data kana.
 
 Gunakan origin aplikasi yang konsisten saat menguji (contoh `http://localhost:3000`), termasuk `TEST_BASE_URL`, redirect URL Auth, dan origin yang diizinkan proxy lokal jika ada. Untuk regresi autentikasi dengan origin tersebut: `TEST_BASE_URL=http://localhost:3000 npm run test:integration`.
+
+## Review SRS dan dashboard (Tugas 3)
+
+Dashboard menampilkan sapaan, jumlah kartu jatuh tempo, total kana valid dan streak dari profil. Streak, XP dan tanggal belajar tidak ditulis oleh modul ini. Filter dashboard dan review hanya menerima tipe yang terdaftar serta ID yang dikenali; untuk sekarang hanya kana. Kartu bertipe lain atau ber-ID lama/tidak dikenal dilewati.
+
+Sesi `/review` memuat maksimal 20 kartu jatuh tempo, diurutkan berdasarkan due_at. Balik kartu dengan klik, Enter atau Spasi, lalu gunakan Tab menuju Lagi/Sulit/Baik/Mudah. Tombol menunjukkan estimasi interval. Lagi menjadwalkan 10 menit dan mengembalikan kartu ke akhir antrean sesi menggunakan state baru. Grade lainnya memakai interval SM-2 dan durasi 24 jam per hari. Ringkasan menghitung setiap penilaian, termasuk penilaian ulang.
+
+Penyimpanan berurutan: UPDATE cards kemudian INSERT review_logs. Selama halaman tetap terbuka, retry menyimpan nilai/waktu penilaian yang sama dan melewati langkah yang sudah sukses. Log diperiksa berdasarkan pemilik, item, grade dan timestamp sebelum INSERT untuk menangani respons yang hilang. Ini bukan transaksi database; jangan menutup halaman di tengah kegagalan penyimpanan. Pemulihan setelah reload, konflik beberapa tab dan jaminan exactly-once lintas sesi belum disediakan. Tidak ada migrasi baru.
+
+```sh
+# Setelah build, jalankan server dan Supabase lokal seperti panduan sebelumnya:
+TEST_BASE_URL=http://localhost:3000 npm run test:review
+```
+
+Runner membuat akun/seed sementara, menguji hasil SM-2 lewat query database, antrean Lagi, filter kartu, batas 20 kartu, profil read-only, keyboard, error/retry UPDATE dan INSERT serta respons log hilang. Data uji dibersihkan pada akhir runner. Screenshot tersedia di test-results/ (diabaikan Git).

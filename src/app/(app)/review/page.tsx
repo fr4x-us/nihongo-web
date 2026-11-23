@@ -1,3 +1,2 @@
-export default function Page() {
-  return <section className="card min-h-56 p-7"><h1 className="text-3xl font-bold">Review</h1></section>;
-}
+import { ReviewSession } from '@/components/review/review-session';
+export default function Page() { return <ReviewSession/>; }

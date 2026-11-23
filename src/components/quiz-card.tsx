@@ -4,7 +4,7 @@ export type QuizOption = { id: string; label: ReactNode };
 export type QuizCardProps = { prompt: ReactNode; options: readonly QuizOption[]; selectedId: string | null; correctId: string | null; feedback: string; locked?: boolean; onAnswer: (id: string) => void };
 export function QuizCard({ prompt, options, selectedId, correctId, feedback, locked = false, onAnswer }: QuizCardProps) {
   return <section className="card p-6 sm:p-8">
-    <div className="mb-8 text-center text-6xl font-semibold" aria-label="Soal">{prompt}</div>
+    <div className="mb-8 text-center text-6xl font-semibold" role="group" aria-label="Soal">{prompt}</div>
     <fieldset><legend className="mb-4 font-semibold">Pilih satu jawaban</legend><div className="grid grid-cols-2 gap-3">{options.map(option => {
       const correct = correctId === option.id;
       const wrong = selectedId === option.id && correctId !== null && !correct;
